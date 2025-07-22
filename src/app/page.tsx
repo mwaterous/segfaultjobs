@@ -18,10 +18,9 @@ export default async function Home() {
           <h1>Job Listings</h1>
         </div>
         <section className="space-y-4">
-
-        {jobs.map((job) => (
-          <JobListItem key={job.id} job={job} />
-        ))}
+          {jobs.map((job) => (
+            <JobListItem key={job.id} job={job} />
+          ))}
         </section>
       </main>
       <footer className="row-start-3 flex flex-wrap items-center justify-center gap-[24px]"></footer>

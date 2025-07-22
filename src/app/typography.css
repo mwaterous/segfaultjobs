@@ -148,7 +148,7 @@
 
     &::before,
     &::after {
-      content: "`";
+      content: '`';
     }
   }
 }

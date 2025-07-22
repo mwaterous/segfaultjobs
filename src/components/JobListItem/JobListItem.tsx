@@ -1,29 +1,20 @@
 // import companyLogoPlaceholder from "@/assets/company-logo-placeholder.png";
-import { Job } from "@/generated/prisma";
-import { formatMoney, relativeDate } from "@/lib/utils";
+import { Job } from '@/generated/prisma'
+import { formatMoney, relativeDate } from '@/lib/utils'
 
-import { Banknote, Briefcase, Clock, Globe2, MapPin } from "lucide-react";
-import Image from "next/image";
-import Badge from "./Badge";
+import { Banknote, Briefcase, Clock, Globe2, MapPin } from 'lucide-react'
+import Image from 'next/image'
+import Badge from './Badge'
 
 interface JobListItemProps {
-  job: Job;
+  job: Job
 }
 
 export default function JobListItem({
-  job: {
-    title,
-    companyName,
-    type,
-    locationType,
-    location,
-    salary,
-    companyLogoUrl,
-    createdAt,
-  },
+  job: { title, companyName, type, locationType, location, salary, companyLogoUrl, createdAt },
 }: JobListItemProps) {
   return (
-    <article className="flex gap-3 w-full rounded-lg border p-5 hover:bg-muted/60">
+    <article className="hover:bg-muted/60 flex w-full gap-3 rounded-lg border p-5">
       {/* <Image
         src={companyLogoUrl || ''}
         alt={`${companyName} logo`}
@@ -47,7 +38,7 @@ export default function JobListItem({
           </p>
           <p className="flex items-center gap-1.5">
             <Globe2 size={16} className="shrink-0" />
-            {location || "Worldwide"}
+            {location || 'Worldwide'}
           </p>
           <p className="flex items-center gap-1.5">
             <Banknote size={16} className="shrink-0" />
@@ -61,11 +52,11 @@ export default function JobListItem({
       </div>
       <div className="hidden shrink-0 flex-col items-end justify-between sm:flex">
         <Badge>{type}</Badge>
-        <span className="flex items-center gap-1.5 text-muted-foreground">
+        <span className="text-muted-foreground flex items-center gap-1.5">
           <Clock size={16} />
           {relativeDate(createdAt)}
         </span>
       </div>
     </article>
-  );
+  )
 }
