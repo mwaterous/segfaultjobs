@@ -4,5 +4,11 @@
     "prettier-plugin-tailwindcss"
   ],
   "tailwindFunctions": ["clsx"],
-  "organizeImportsSkipDestructiveCodeActions": true
+  "organizeImportsSkipDestructiveCodeActions": true,
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "printWidth": 120,
+  "bracketSameLine": true
 }
