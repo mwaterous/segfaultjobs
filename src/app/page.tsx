@@ -4,15 +4,24 @@ import Title from '@/components/Title'
 import { JobSearchSchema } from '@/lib/validation'
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     q?: string
     type?: string
     location?: string
     remote?: boolean
-  }
+  }>
 }
 
-export default function Home({ searchParams: { q, type, location, remote } }: PageProps) {
+export default async function Home(props: PageProps) {
+  const searchParams = await props.searchParams;
+
+  const {
+    q,
+    type,
+    location,
+    remote
+  } = searchParams;
+
   const filterValues: JobSearchSchema = {
     q,
     type,
