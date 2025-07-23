@@ -1,29 +1,35 @@
-import JobListItem from '@/components/JobListItem'
-import { prisma } from '@/lib/prisma'
+import Results from '@/components/Results'
+import Sidebar from '@/components/Sidebar/Sidebar'
+import Title from '@/components/Title'
+import { JobSearchSchema } from '@/lib/validation'
 
-export default async function Home() {
-  const jobs = await prisma.job.findMany({
-    where: {
-      approved: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  })
+interface PageProps {
+  searchParams: {
+    q?: string
+    type?: string
+    location?: string
+    remote?: boolean
+  }
+}
+
+export default function Home({ searchParams: { q, type, location, remote } }: PageProps) {
+  const filterValues: JobSearchSchema = {
+    q,
+    type,
+    location,
+    remote: remote === true,
+  }
 
   return (
-    <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-sans sm:p-20">
-      <main className="row-start-2 flex flex-col items-center gap-[32px] sm:items-start">
-        <div className="w-full space-y-5 text-center">
-          <h1>Job Listings</h1>
-        </div>
-        <section className="space-y-4">
-          {jobs.map((job) => (
-            <JobListItem key={job.id} job={job} />
-          ))}
-        </section>
-      </main>
-      <footer className="row-start-3 flex flex-wrap items-center justify-center gap-[24px]"></footer>
-    </div>
+    <main className="m-auto my-10 max-w-5xl space-y-10 px-3">
+      <div className="space-y-5 text-center">
+        <Title>Developer Jobs</Title>
+        <p className="text-muted-foreground">Find your dream job.</p>
+      </div>
+      <section className="flex flex-col gap-4 md:flex-row">
+        <Sidebar />
+        <Results filterValues={filterValues} />
+      </section>
+    </main>
   )
 }
