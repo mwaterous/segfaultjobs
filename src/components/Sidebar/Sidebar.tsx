@@ -1,77 +1,102 @@
-import { JOB_TYPES } from '@/lib/job-types'
-import { prisma } from '@/lib/prisma'
-import { jobSearchSchema } from '@/lib/validation'
-import { Button } from '../ui/button'
-import { Input } from '../ui/input'
-import { Label } from '../ui/label'
-import Select from '../Select'
-import { redirect } from 'next/navigation'
+'use client'
+import { Dialog, DialogBackdrop, DialogPanel, TransitionChild } from '@headlessui/react' // @TODO Temporarily using @headlessui/react for Dialog and Menu components, replace with shadcn/ui components later
+import React from 'react'
 
-async function filterJobs(formData: FormData) {
-  'use server'
+import { navigation, teams } from '@/lib/static-data'
+import { cn } from '@/lib/utils'
+import { Settings as SettingsIcon, X as XIcon } from 'lucide-react' // Using lucide-react for
+import Image from 'next/image'
 
-  const values = Object.fromEntries(formData.entries())
-  const { q, type, location, remote } = jobSearchSchema.parse(values)
-
-  const searchParams = new URLSearchParams({
-    ...(q && { q: q.trim() }),
-    ...(type && { type }),
-    ...(location && { location }),
-    ...(remote && { remote: 'true' }),
-  })
-
-  console.log('Search Params:', searchParams.toString())
-  redirect(`/?${searchParams.toString()}`)
-}
-
-export default async function Sidebar() {
-  const distinctLocations = (await prisma.job
-    .findMany({
-      where: { approved: true },
-      select: { location: true },
-      distinct: ['location'],
-    })
-    .then((locations) => locations.map(({ location }) => location).filter(Boolean))) as string[]
+export default function Sidebar() {
+  const [sidebarOpen, setSidebarOpen] = React.useState(false)
 
   return (
-    <aside className="bg-background sticky top-0 h-fit w-3xs rounded-lg border">
-      <form action={filterJobs} className="space-y-4 p-4">
-        <div className="space-y-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="q">Search</Label>
-            <Input name="q" placeholder="Title, company, etc" />
+    <Dialog open={sidebarOpen} onClose={setSidebarOpen} className="relative z-50 lg:hidden">
+      <DialogBackdrop
+        transition
+        className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-closed:opacity-0"
+      />
+
+      <div className="fixed inset-0 flex">
+        <DialogPanel
+          transition
+          className="relative mr-16 flex w-full max-w-xs flex-1 transform transition duration-300 ease-in-out data-closed:-translate-x-full">
+          <TransitionChild>
+            <div className="absolute top-0 left-full flex w-16 justify-center pt-5 duration-300 ease-in-out data-closed:opacity-0">
+              <button type="button" onClick={() => setSidebarOpen(false)} className="-m-2.5 p-2.5">
+                <span className="sr-only">Close sidebar</span>
+                <XIcon size={16} aria-hidden="true" className="size-6 text-white" />
+              </button>
+            </div>
+          </TransitionChild>
+
+          {/* Sidebar component, swap this element with another sidebar if you like */}
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
+            <div className="flex h-16 shrink-0 items-center">
+              <Image
+                alt="Your Company"
+                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=white"
+                width={1693}
+                height={1269}
+                className="h-8 w-auto"
+              />
+            </div>
+            <nav className="flex flex-1 flex-col">
+              <ul role="list" className="flex flex-1 flex-col gap-y-7">
+                <li>
+                  <ul role="list" className="-mx-2 space-y-1">
+                    {navigation.map((item) => (
+                      <li key={item.name}>
+                        <a
+                          href={item.href}
+                          className={cn(
+                            item.current
+                              ? 'bg-gray-800 text-white'
+                              : 'text-gray-400 hover:bg-gray-800 hover:text-white',
+                            'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
+                          )}>
+                          <item.icon aria-hidden="true" className="size-6 shrink-0" />
+                          {item.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+                <li>
+                  <div className="text-xs/6 font-semibold text-gray-400">Your teams</div>
+                  <ul role="list" className="-mx-2 mt-2 space-y-1">
+                    {teams.map((team) => (
+                      <li key={team.name}>
+                        <a
+                          href={team.href}
+                          className={cn(
+                            team.current
+                              ? 'bg-gray-800 text-white'
+                              : 'text-gray-400 hover:bg-gray-800 hover:text-white',
+                            'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
+                          )}>
+                          <span className="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white">
+                            {team.initial}
+                          </span>
+                          <span className="truncate">{team.name}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+                <li className="mt-auto">
+                  <a
+                    href="#"
+                    className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-400 hover:bg-gray-800 hover:text-white">
+                    <SettingsIcon size={16} aria-hidden="true" className="size-6 shrink-0" />
+                    Settings
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="type">Type</Label>
-            <Select id="type" name="type" defaultValue="">
-              <option value="">All Types</option>
-              {JOB_TYPES.map((type) => (
-                <option key={type} value={type}>
-                  {type.charAt(0).toUpperCase() + type.slice(1)}
-                </option>
-              ))}
-            </Select>
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="location">Location</Label>
-            <Select id="location" name="location" defaultValue="">
-              <option value="">All Locations</option>
-              {distinctLocations.map((location) => (
-                <option key={location} value={location}>
-                  {location}
-                </option>
-              ))}
-            </Select>
-          </div>
-          <div className="flex items-center gap-2">
-            <input id="remote" name="remote" type="checkbox" className="h-4 w-4 rounded border-gray-300 accent-black" />
-            <Label htmlFor="remote">Remote</Label>
-          </div>
-          <Button type="submit" className="w-full">
-            Filter Search Results
-          </Button>
-        </div>
-      </form>
-    </aside>
+        </DialogPanel>
+      </div>
+    </Dialog>
   )
 }

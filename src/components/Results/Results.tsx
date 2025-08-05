@@ -47,6 +47,11 @@ export default async function Results({ filterValues: { q, type, location, remot
       {jobs.map((job) => (
         <JobListItem key={job.id} job={job} />
       ))}
+      {jobs.length === 0 && (
+        <div className="text-center text-muted-foreground">
+          No jobs found matching your criteria. Try adjusting your search.
+        </div>
+      )}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import Results from '@/components/Results'
-import Sidebar from '@/components/Sidebar/Sidebar'
+import Sidebar from '@/components/FilterWidget/FilterWidget'
 import Title from '@/components/Title'
 import { JobSearchSchema } from '@/lib/validation'
 
@@ -36,7 +36,7 @@ export default async function Home(props: PageProps) {
         <p className="text-muted-foreground">Find your dream job.</p>
       </div>
       <section className="flex flex-col gap-4 md:flex-row">
-        <Sidebar />
+        <Sidebar defaultValues={filterValues} />
         <Results filterValues={filterValues} />
       </section>
     </main>
