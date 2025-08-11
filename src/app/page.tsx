@@ -1,15 +1,50 @@
 import Results from '@/components/Results'
 import Sidebar from '@/components/FilterWidget/FilterWidget'
 import Title from '@/components/Title'
-import { JobSearchSchema } from '@/lib/validation'
+import { JobSearchValues } from '@/lib/validation'
+import { Metadata } from 'next';
 
 interface PageProps {
-  searchParams: Promise<{
-    q?: string
-    type?: string
-    location?: string
-    remote?: boolean
-  }>
+  searchParams: {
+    q?: string;
+    type?: string;
+    location?: string;
+    remote?: string;
+    page?: string;
+  };
+}
+
+function getTitle({ q, type, location, remote }: JobSearchValues) {
+  const titlePrefix = q
+    ? `${q} jobs`
+    : type
+      ? `${type} developer jobs`
+      : remote
+        ? "Remote developer jobs"
+        : "All developer jobs";
+
+  const titleSuffix = location ? ` in ${location}` : "";
+
+  return `${titlePrefix}${titleSuffix}`;
+}
+
+export async function generateMetadata({
+  searchParams,
+}: PageProps): Metadata {
+  const {
+    q,
+    type,
+    location,
+    remote
+  } = await searchParams;
+  return {
+    title: `${getTitle({
+      q,
+      type,
+      location,
+      remote: remote === "true",
+    })} | Segfault Jobs`,
+  };
 }
 
 export default async function Home(props: PageProps) {
@@ -22,7 +57,7 @@ export default async function Home(props: PageProps) {
     remote
   } = searchParams;
 
-  const filterValues: JobSearchSchema = {
+  const filterValues: JobSearchValues = {
     q,
     type,
     location,
@@ -32,7 +67,7 @@ export default async function Home(props: PageProps) {
   return (
     <main className="m-auto my-10 max-w-5xl space-y-10 px-3">
       <div className="space-y-5 text-center">
-        <Title>Developer Jobs</Title>
+        <Title>{getTitle(filterValues)}</Title>
         <p className="text-muted-foreground">Find your dream job.</p>
       </div>
       <section className="flex flex-col gap-4 md:flex-row">

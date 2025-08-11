@@ -1,10 +1,10 @@
 import JobListItem from '@/components/JobListItem'
 import { prisma } from '@/lib/prisma'
-import { JobSearchSchema } from '@/lib/validation'
+import { JobSearchValues } from '@/lib/validation'
 import { Prisma } from '@prisma/client'
 
 interface ResultsProps {
-  filterValues: JobSearchSchema
+  filterValues: JobSearchValues
 }
 
 export default async function Results({ filterValues: { q, type, location, remote } }: ResultsProps) {
@@ -28,12 +28,15 @@ export default async function Results({ filterValues: { q, type, location, remot
   const where: Prisma.JobWhereInput = {
     AND: [
       searchFilter,
-      type ? { type } : {},
+      type ? { type: type } : {},
       location ? { location } : {},
       remote ? { locationType: 'Remote' } : {},
       { approved: true },
     ],
   }
+
+  console.log('Search Filter:', searchFilter)
+  console.log('Search Filter:', where)
 
   const jobs = await prisma.job.findMany({
     where,
@@ -48,7 +51,7 @@ export default async function Results({ filterValues: { q, type, location, remot
         <JobListItem key={job.id} job={job} />
       ))}
       {jobs.length === 0 && (
-        <div className="text-center text-muted-foreground">
+        <div className="text-muted-foreground text-center">
           No jobs found matching your criteria. Try adjusting your search.
         </div>
       )}

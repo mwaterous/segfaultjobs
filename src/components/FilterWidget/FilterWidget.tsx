@@ -1,6 +1,6 @@
 import { JOB_TYPES } from '@/lib/job-types'
 import { prisma } from '@/lib/prisma'
-import { JobSearchSchema, jobSearchSchema } from '@/lib/validation'
+import { JobSearchValues, jobSearchSchema } from '@/lib/validation'
 import { redirect } from 'next/navigation'
 import FilterSubmit from '../FilterSubmit'
 import Select from '../Select'
@@ -13,6 +13,7 @@ async function filterJobs(formData: FormData) {
   const values = Object.fromEntries(formData.entries())
   const { q, type, location, remote } = jobSearchSchema.parse(values)
 
+  console.log('Filter Values:', { q, type, location, remote })
   const searchParams = new URLSearchParams({
     ...(q && { q: q.trim() }),
     ...(type && { type }),
@@ -25,7 +26,7 @@ async function filterJobs(formData: FormData) {
 }
 
 interface SidebarProps {
-  defaultValues: JobSearchSchema
+  defaultValues: JobSearchValues
 }
 
 export default async function FilterWidget({ defaultValues }: SidebarProps) {
@@ -39,7 +40,7 @@ export default async function FilterWidget({ defaultValues }: SidebarProps) {
 
   return (
     <aside className="bg-background sticky top-0 h-fit w-3xs rounded-lg border">
-      <form action={filterJobs} className="space-y-4 p-4">
+      <form action={filterJobs} key={JSON.stringify(defaultValues)} className="space-y-4 p-4">
         <div className="space-y-4">
           <div className="flex flex-col gap-2">
             <Label htmlFor="q">Search</Label>

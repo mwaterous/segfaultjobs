@@ -9,9 +9,9 @@ import {
 
 
 export const navigation = [
-  { name: 'Dashboard', href: '#', icon: HouseIcon, current: true },
+  { name: 'Home', href: '/', icon: HouseIcon, current: true },
+  { name: 'New Listing', href: '/jobs/new', icon: FolderIcon, current: false },
   { name: 'Team', href: '#', icon: UsersIcon, current: false },
-  { name: 'Projects', href: '#', icon: FolderIcon, current: false },
   { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
   { name: 'Documents', href: '#', icon: FilesIcon, current: false },
   { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },

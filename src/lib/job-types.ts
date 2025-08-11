@@ -1,3 +1,3 @@
-export const JOB_TYPES = ['full-time', 'part-time', 'contract', 'internship', 'temporary', 'volunteer']
+export const JOB_TYPES = ['Full-time', 'Part-time', 'Contract', 'Temporary', 'Internship', 'Volunteer']
 
-export const LOCATION_TYPES = ['remote', 'on-site', 'hybrid', 'flexible']
+export const LOCATION_TYPES = ['Remote', 'On-site', 'Hybrid']

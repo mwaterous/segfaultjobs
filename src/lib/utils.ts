@@ -27,3 +27,10 @@ export function relativeDate(from: Date): string {
   // return `${Math.floor(seconds / 31536000)} years ago`
   return formatDistanceToNowStrict(from, { addSuffix: true })
 }
+
+export function toSlug(str: string) {
+  return str
+    .toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "");
+}
