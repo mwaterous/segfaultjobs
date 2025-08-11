@@ -3,7 +3,7 @@ import { Job } from '@/generated/prisma'
 import { formatMoney, relativeDate } from '@/lib/utils'
 
 import { Banknote, Briefcase, Clock, Globe2, MapPin } from 'lucide-react'
-import Image from 'next/image'
+// import Image from 'next/image'
 import Badge from './Badge'
 
 interface JobListItemProps {

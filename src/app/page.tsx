@@ -5,13 +5,13 @@ import { JobSearchValues } from '@/lib/validation'
 import { Metadata } from 'next';
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     q?: string;
     type?: string;
     location?: string;
     remote?: string;
     page?: string;
-  };
+  }>;
 }
 
 function getTitle({ q, type, location, remote }: JobSearchValues) {
